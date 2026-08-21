@@ -89,6 +89,97 @@ endmodule
 # Testbench
 ```
 
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 06.08.2026 17:08:05
+// Design Name: 
+// Module Name: tb_vendor
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+module tb_vending_machine;
+
+reg clk;
+reg reset;
+reg coin5;
+reg coin10;
+
+wire product;
+wire change;
+
+// Instantiate the vending machine
+vending_machine uut (
+    .clk(clk),
+    .reset(reset),
+    .coin5(coin5),
+    .coin10(coin10),
+    .product(product),
+    .change(change)
+);
+
+// Clock generation (10ns period)
+always #5 clk = ~clk;
+
+initial begin
+    // Initialize inputs
+    clk = 0;
+    reset = 1;
+    coin5 = 0;
+    coin10 = 0;
+
+    // Apply reset
+    #10 reset = 0;
+
+    // Test Case 1: 5 + 10 = 15 (product)
+    #10 coin5 = 1;  #10 coin5 = 0;
+    #10 coin10 = 1; #10 coin10 = 0;
+
+    // Wait
+    #20;
+
+    // Test Case 2: 10 + 10 = 20 (product + change)
+    #10 coin10 = 1; #10 coin10 = 0;
+    #10 coin10 = 1; #10 coin10 = 0;
+
+    // Wait
+    #20;
+
+    // Test Case 3: 5 + 5 + 5 = 15 (product)
+    #10 coin5 = 1; #10 coin5 = 0;
+    #10 coin5 = 1; #10 coin5 = 0;
+    #10 coin5 = 1; #10 coin5 = 0;
+
+    // Wait
+    #30;
+
+    $finish;
+end
+
+// Monitor signals
+initial begin
+    $monitor("Time=%0t | coin5=%b coin10=%b | product=%b change=%b",
+              $time, coin5, coin10, product, change);
+end
+
+endmodule
+
+
 ```
 Expected Waveform Behavior
 Case 1: 5 + 5 + 5
@@ -102,6 +193,11 @@ Case 3: 10 + 10
    change = 1
 
 # Output waveform 
+<img width="1592" height="892" alt="image" src="https://github.com/user-attachments/assets/d08390ce-2af0-499d-b3e1-cec66686b6dd" />
+
+<img width="900" height="1600" alt="WhatsApp Image 2026-08-07 at 1 55 02 PM" src="https://github.com/user-attachments/assets/34ef8fc4-554d-4b8e-b8a5-d8ccb8189e5a" />
+
+
 
 # Conclusion
 The vending machine controller was successfully designed using a Moore FSM model. The simulation verified correct product dispensing and change return behavior for different coin inputs.
